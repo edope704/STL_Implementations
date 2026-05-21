@@ -20,7 +20,7 @@ class vector
     { };
 
   public:
-    vector(std::size_t capacity) 
+    vector(std::size_t capacity = 10) 
       : size_{ 0 }
       , capacity_{ capacity_ }
       , elem_{ new T[capacity_] } 
