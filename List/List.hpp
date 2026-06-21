@@ -6,7 +6,15 @@
 // #include <iostream>
 
 namespace tgl {
+#include <iterator>
+// #include <iostream>
 
+namespace tgl {
+
+/**
+ * @brief A generic doubly-linked list implementation.
+ * @tparam T The type of elements stored in the list.
+ */
 /**
  * @brief A generic doubly-linked list implementation.
  * @tparam T The type of elements stored in the list.
@@ -24,6 +32,17 @@ class List
     using reference       = T&;
     using const_reference = const T&;
 
+    class iterator 
+    {
+      public:
+        using iterator_category = std::bidirectional_iterator_tag;
+        using value_type        = T;
+        using difference_type   = std::ptrdiff_t;
+        using pointer           = T*;
+        using reference         = T&;
+
+      private:
+        Node* p;
     class iterator 
     {
       public:
@@ -65,6 +84,9 @@ class List
     /**
      * @brief Default constructor. Initializes an empty list.
      */
+    /**
+     * @brief Default constructor. Initializes an empty list.
+     */
     List() 
       : head_{ nullptr }
       , tail_{ head_ }
@@ -88,9 +110,23 @@ class List
      * @todo Implement the insertion logic.
      */
     iterator insert(iterator& it, const_reference elem) {
+    /**
+     * @brief Inserts an element before the specified iterator position.
+     * @param it Iterator indicating the position before which to insert.
+     * @param elem The element to insert.
+     * @return Iterator pointing to the newly inserted element.
+     * @todo Implement the insertion logic.
+     */
+    iterator insert(iterator& it, const_reference elem) {
       return begin();
     }
 
+    /**
+     * @brief Erases the element at the specified iterator position.
+     * @param p Iterator pointing to the element to erase.
+     * @return Iterator pointing to the element following the erased one.
+     * @todo Implement the erase logic.
+     */
     /**
      * @brief Erases the element at the specified iterator position.
      * @param p Iterator pointing to the element to erase.
@@ -101,6 +137,11 @@ class List
       return begin();
     }
 
+    /**
+     * @brief Adds an element to the end of the list.
+     * @param elem The element to append.
+     */
+    void push_back(const_reference elem) {        
     /**
      * @brief Adds an element to the end of the list.
      * @param elem The element to append.
@@ -123,6 +164,11 @@ class List
      * @param elem The element to prepend.
      */
     void push_front(const_reference elem) {
+    /**
+     * @brief Adds an element to the beginning of the list.
+     * @param elem The element to prepend.
+     */
+    void push_front(const_reference elem) {
       Node* new_node{ new Node(elem) };
       if (size_ == 0) {
         head_ = new_node;
@@ -138,6 +184,9 @@ class List
     /**
      * @brief Removes the last element from the list.
      */
+    /**
+     * @brief Removes the last element from the list.
+     */
     void pop_back() {
       if (size_ >= 1) { 
         tail_ = tail_->prev_;
@@ -146,6 +195,9 @@ class List
       }
     }
     
+    /**
+     * @brief Removes the first element from the list.
+     */
     /**
      * @brief Removes the first element from the list.
      */
@@ -162,6 +214,17 @@ class List
      * @return Reference to the first element.
      */
     reference front() { return head_->elem_; }
+    /**
+     * @brief Accesses the first element of the list.
+     * @return Reference to the first element.
+     */
+    reference front() { return head_->elem_; }
+
+    /**
+     * @brief Accesses the last element of the list.
+     * @return Reference to the last element.
+     */
+    reference back()  { return tail_->elem_; }   
 
     /**
      * @brief Accesses the last element of the list.

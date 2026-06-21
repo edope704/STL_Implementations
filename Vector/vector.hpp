@@ -28,11 +28,8 @@ class vector
     class iterator
     { 
       public:
-        using iterator_category = std::random_access_iterator_tag;
         using value_type        = T;
-        using difference_type   = std::ptrdiff_t;
         using pointer           = T*;
-        using reference         = T&;
 
       private:
         T* p;
@@ -62,21 +59,30 @@ class vector
         bool operator!=(const iterator& it) const { return p != it.p; }
     };
     /**
-     * @brief Initializes a vector with a specified initial capacity.
-     * @param capacity The initial capacity of the vector. Defaults to 10.
+     * @brief Initializes an empty vector.
      */
-    vector(size_type capacity = 10) 
+    vector() 
       : size_{ 0 }
-      , capacity_{ capacity }
+      , capacity_{ 0 }
       , elem_{ new T[capacity_] } 
       { }
+
+    /**
+     * @brief Initializes a vecor with specified initial capacity.
+     * @param capacity the initial capacity of the vector.
+     */
+    vector(size_type capacity)
+      : size_{ 0 }
+      , capacity_{ capacity }
+      , elem_{ new T[capacity_] }
+      { } 
 
     /**
      * @brief Allows initialization using initializer_list.
      * @param init The initializer list used to populate the vector.
      */
     vector(std::initializer_list<T> init)
-      : size_{ int(init.size()) }
+      : size_{ init.size() }
       , capacity_{ size_ }
       , elem_{ new T[capacity_] } 
     { 
@@ -252,8 +258,8 @@ class vector
      */
     void push_back(const_reference elem) {
       if (size_ == capacity_)
-        reserve(2*capacity_);
-      elem_[size_++] = elem;
+        reserve(capacity_ == 0 ? 1 : 2*capacity_);
+      elem_[++size_] = elem;
     }
 
     /**
@@ -261,16 +267,16 @@ class vector
      * @return A reference to the removed element.
      * @throws std::out_of_range if the vector is empty.
      */
-    reference pop_back() {
+    void pop_back() {
       if (size_ == 0) throw std::out_of_range("Vector is empty");
-      return elem_[--size_];
+      --size_;
     }
 
   private:
-    T* elem_;
     size_type size_;
     size_type capacity_;
-
+    T* elem_;
+    
 }; // vector
 }  // tgl
 
