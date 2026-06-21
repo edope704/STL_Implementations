@@ -1,5 +1,0 @@
-if(EXISTS "/home/penny/Documents/Github/Data-Structures-and-Algorithms/Vector/build/vector_test[1]_tests.cmake")
-  include("/home/penny/Documents/Github/Data-Structures-and-Algorithms/Vector/build/vector_test[1]_tests.cmake")
-else()
-  add_test(vector_test_NOT_BUILT vector_test_NOT_BUILT)
-endif()
