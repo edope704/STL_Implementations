@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 
-TEST(VectorTest, CreateEmpty) {
+TEST(VectorTest, CreateDefault) {
   tgl::vector<int> vec;
   int size = vec.size();
   int capacity = vec.capacity();
@@ -14,16 +14,15 @@ TEST(VectorTest, CreateEmpty) {
 TEST(VectorTest, CreateWithCapacity) {
   int initial_capacity( 10 );
   tgl::vector<int> vec( initial_capacity ); 
-  int size = vec.size();
-  int capacity = vec.capacity();
 
-  EXPECT_EQ(size, 0);
-  EXPECT_EQ(capacity, initial_capacity);
+  EXPECT_EQ(vec.size(), 0);
+  EXPECT_EQ(vec.capacity(), initial_capacity);
 }
 
 TEST(VectorTest, CreateInitializerList) {
   tgl::vector<int> vec{0,1,2};
 
+  EXPECT_EQ(vec.size(), 3);
   EXPECT_EQ(vec[0], 0);
   EXPECT_EQ(vec[1], 1);
   EXPECT_EQ(vec[2], 2);
@@ -76,6 +75,10 @@ TEST(VectorTest, MoveAssignment) {
 
 TEST(VectorTest, AccessWithBoundsChecking) {
   tgl::vector<int> vec{0,1,2};
+
+  EXPECT_EQ(vec.at(0), 0);
+  EXPECT_EQ(vec.at(1), 1);
+  EXPECT_EQ(vec.at(2), 2);
   EXPECT_THROW(vec.at(3), std::out_of_range);
 }
 
@@ -101,4 +104,13 @@ TEST(VectorTest, PopBack) {
 
   EXPECT_EQ(vec.size(), 0);
   EXPECT_THROW(vec.pop_back(), std::out_of_range);
+}
+
+TEST(VectorTest, BasicIterator) {
+  tgl::vector<int> vec{ 0, 1, 2, 3, 4 };
+
+  int i{ 0 };
+  for (auto elem : vec) {
+    EXPECT_EQ(elem, i++);
+  }
 }

@@ -28,6 +28,7 @@ class vector
     class iterator
     { 
       public:
+        using iterator_category = std::random_access_iterator_tag;
         using value_type        = T;
         using pointer           = T*;
 
@@ -58,6 +59,7 @@ class vector
         bool operator==(const iterator& it) const { return p == it.p; }
         bool operator!=(const iterator& it) const { return p != it.p; }
     };
+
     /**
      * @brief Initializes an empty vector.
      */
