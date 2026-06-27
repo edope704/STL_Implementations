@@ -10,6 +10,38 @@
 // #include <iostream>
 
 namespace tgl {
+template<class T>
+class vec_iterator
+{ 
+  public:
+    using iterator_category = std::random_access_iterator_tag;
+    using value_type        = T;
+    using pointer           = T*;
+    using reference         = T&;
+
+    /**
+     * @brief Constructs an iterator from a value_type pointer
+     * @param it Pointer to the node 
+     */
+    vec_iterator(value_type* it) : p{ it } { }
+    vec_iterator& operator--() { p--; return *this; }
+    vec_iterator& operator++() { p++; return *this; }
+    vec_iterator  operator++(int) { 
+      T* temp_p = p;
+      p++;
+      return temp_p;
+    }
+
+    reference operator*() const { return *p; }
+    pointer operator->() const { return p; }
+    pointer base() const { return p; }
+
+    bool operator==(const vec_iterator& it) const { return p == it.p; }
+    bool operator!=(const vec_iterator& it) const { return p != it.p; }
+
+  private:
+    pointer p;
+};
 
 /**
  * @brief A dynamic array implementation.
@@ -24,37 +56,9 @@ class vector
     using size_type       = size_t;
     using reference       = T&;
     using const_reference = const T&;
-
-    class iterator
-    { 
-      public:
-        using iterator_category = std::random_access_iterator_tag;
-        using value_type        = T;
-        using pointer           = T*;
-
-      private:
-        T* p;
-
-      public:
-        /**
-         * @brief Constructs an iterator from a value_type pointer
-         * @param it Pointer to the node 
-         */
-        iterator(value_type* it) : p{ it } { }
-        iterator& operator--() { p--; return *this; }
-        iterator& operator++() { p++; return *this; }
-        iterator  operator++(int) { 
-          T* temp_p = p;
-          p++;
-          return temp_p;
-        }
-
-        reference operator*() { return *p; }
-        pointer operator->() const { return p; }
-
-        bool operator==(const iterator& it) const { return p == it.p; }
-        bool operator!=(const iterator& it) const { return p != it.p; }
-    };
+    
+    using iterator        = vec_iterator<T>;
+    using const_iterator  = vec_iterator<const T>;
 
     /**
      * @brief Initializes an empty vector.
@@ -257,7 +261,7 @@ class vector
     void push_back(const_reference elem) {
       if (size_ == capacity_)
         reserve(capacity_ == 0 ? 1 : 2*capacity_);
-      elem_[++size_] = elem;
+      elem_[size_++] = elem;
     }
 
     /**
@@ -276,6 +280,7 @@ class vector
       if (it == end()) 
         push_back(elem);
       else {
+
       }
          
     }
