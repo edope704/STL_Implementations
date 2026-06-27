@@ -70,7 +70,7 @@ TEST(VectorTest, MoveConstructor) {
   EXPECT_EQ(vec_moved[1], 1);
   EXPECT_EQ(vec_moved[2], 2);
 
-  EXPECT_EQ(vec.begin().get_ptr(), nullptr);
+  EXPECT_EQ(vec.begin().base(), nullptr);
 }
 
 TEST(VectorTest, MoveAssignment) {
@@ -82,7 +82,7 @@ TEST(VectorTest, MoveAssignment) {
   EXPECT_EQ(vec_moved[1], 1);
   EXPECT_EQ(vec_moved[2], 2);
 
-  EXPECT_EQ(vec.begin().get_ptr(), nullptr);
+  EXPECT_EQ(vec.begin().base(), nullptr);
 }
 
 TEST(VectorTest, AccessWithBoundsChecking) {
