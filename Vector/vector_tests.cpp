@@ -34,6 +34,11 @@ TEST(VectorTest, CopyConstructor) {
 
   EXPECT_EQ(vec.size(), vec_copy.size());
   EXPECT_EQ(vec.capacity(), vec_copy.capacity());
+
+  EXPECT_EQ(vec_copy[0], 0);
+  EXPECT_EQ(vec_copy[1], 1);
+  EXPECT_EQ(vec_copy[2], 2);
+  
   EXPECT_EQ(vec_copy[0], 0);
   EXPECT_EQ(vec_copy[1], 1);
   EXPECT_EQ(vec_copy[2], 2);
@@ -46,29 +51,36 @@ TEST(VectorTest, CopyAssignment) {
 
   EXPECT_EQ(vec.size(), vec_copy.size());
   EXPECT_EQ(vec.capacity(), vec_copy.capacity());
+
+  EXPECT_EQ(vec_copy[0], 0);
+  EXPECT_EQ(vec_copy[1], 1);
+  EXPECT_EQ(vec_copy[2], 2);
+  
   EXPECT_EQ(vec_copy[0], 0);
   EXPECT_EQ(vec_copy[1], 1);
   EXPECT_EQ(vec_copy[2], 2);
 }
 
 TEST(VectorTest, MoveConstructor) {
-  tgl::vector<int> vec{ 0 };
+  tgl::vector<int> vec{0,1,2};
   tgl::vector<int> vec_moved( std::move(vec));
 
-  EXPECT_EQ(vec_moved.size(), 1);
-  EXPECT_EQ(vec_moved.capacity(), 1);
-  EXPECT_NE(vec_moved.begin().get_ptr(), nullptr);
+  EXPECT_EQ(vec_moved.size(), 3);
+  EXPECT_EQ(vec_moved[0], 0);
+  EXPECT_EQ(vec_moved[1], 1);
+  EXPECT_EQ(vec_moved[2], 2);
 
   EXPECT_EQ(vec.begin().get_ptr(), nullptr);
 }
 
 TEST(VectorTest, MoveAssignment) {
-  tgl::vector<int> vec{ 0 };
+  tgl::vector<int> vec{0,1,2};
   tgl::vector<int> vec_moved = std::move(vec);
 
-  EXPECT_EQ(vec_moved.size(), 1);
-  EXPECT_EQ(vec_moved.capacity(), 1);
-  EXPECT_NE(vec_moved.begin().get_ptr(), nullptr);
+  EXPECT_EQ(vec_moved.size(), 3);
+  EXPECT_EQ(vec_moved[0], 0);
+  EXPECT_EQ(vec_moved[1], 1);
+  EXPECT_EQ(vec_moved[2], 2);
 
   EXPECT_EQ(vec.begin().get_ptr(), nullptr);
 }
