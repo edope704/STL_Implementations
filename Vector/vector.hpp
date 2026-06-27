@@ -50,11 +50,7 @@ class vector
         }
 
         reference operator*() { return *p; }
-
-        /**
-         * @brief Retrieves the underlying pointer
-         */
-        pointer get_ptr() const { return p; }
+        pointer operator->() const { return p; }
 
         bool operator==(const iterator& it) const { return p == it.p; }
         bool operator!=(const iterator& it) const { return p != it.p; }
@@ -272,6 +268,20 @@ class vector
     void pop_back() {
       if (size_ == 0) throw std::out_of_range("Vector is empty");
       --size_;
+    }
+
+    void insert(iterator it, value_type elem) {
+      if (size_ == capacity_) 
+        reserve(capacity_ == 0 ? 1 : 2*capacity_);
+      if (it == end()) 
+        push_back(elem);
+      else {
+      }
+         
+    }
+
+    void erase(iterator it) {
+        
     }
 
   private:
