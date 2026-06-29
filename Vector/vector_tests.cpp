@@ -70,7 +70,7 @@ TEST(VectorTest, MoveConstructor) {
   EXPECT_EQ(vec_moved[1], 1);
   EXPECT_EQ(vec_moved[2], 2);
 
-  EXPECT_EQ(vec.begin().base(), nullptr);
+  EXPECT_EQ(vec.begin(), nullptr);
 }
 
 TEST(VectorTest, MoveAssignment) {
@@ -82,7 +82,7 @@ TEST(VectorTest, MoveAssignment) {
   EXPECT_EQ(vec_moved[1], 1);
   EXPECT_EQ(vec_moved[2], 2);
 
-  EXPECT_EQ(vec.begin().base(), nullptr);
+  EXPECT_EQ(vec.begin(), nullptr);
 }
 
 TEST(VectorTest, AccessWithBoundsChecking) {
@@ -107,7 +107,7 @@ TEST(VectorTest, PushBack) {
   vec.push_back(10);
 
   EXPECT_EQ(vec.size(), 4);
-  EXPECT_EQ(*vec.end(), 10);
+  EXPECT_EQ(*(vec.end()-1), 10);
 }
 
 TEST(VectorTest, PopBack) {
@@ -118,11 +118,19 @@ TEST(VectorTest, PopBack) {
   EXPECT_THROW(vec.pop_back(), std::out_of_range);
 }
 
-TEST(VectorTest, BasicIterator) {
-  tgl::vector<int> vec{ 0, 1, 2, 3, 4 };
+TEST(VectorTest, Insert) {
+  tgl::vector<int> vec{0,1};
 
-  int i{ 0 };
-  for (auto elem : vec) {
-    EXPECT_EQ(elem, i++);
-  }
+  vec.insert(vec.end(), 2);
+  vec.insert(vec.begin(), -1);
+  vec.insert(&vec[2], 99);
+
+  EXPECT_EQ(vec.size(), 5);
+
+  EXPECT_EQ(vec[0], -1);
+  EXPECT_EQ(vec[1], 0);
+  EXPECT_EQ(vec[2], 99);
+  EXPECT_EQ(vec[3], 1);
+  EXPECT_EQ(vec[4], 2);
 }
+
