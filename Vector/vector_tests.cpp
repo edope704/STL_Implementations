@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 
-TEST(VectorTest, CreateEmpty) {
+TEST(VectorTest, CreateDefault) {
   tgl::vector<int> vec;
   int size = vec.size();
   int capacity = vec.capacity();
@@ -14,16 +14,15 @@ TEST(VectorTest, CreateEmpty) {
 TEST(VectorTest, CreateWithCapacity) {
   int initial_capacity( 10 );
   tgl::vector<int> vec( initial_capacity ); 
-  int size = vec.size();
-  int capacity = vec.capacity();
 
-  EXPECT_EQ(size, 0);
-  EXPECT_EQ(capacity, initial_capacity);
+  EXPECT_EQ(vec.size(), 0);
+  EXPECT_EQ(vec.capacity(), initial_capacity);
 }
 
 TEST(VectorTest, CreateInitializerList) {
   tgl::vector<int> vec{0,1,2};
 
+  EXPECT_EQ(vec.size(), 3);
   EXPECT_EQ(vec[0], 0);
   EXPECT_EQ(vec[1], 1);
   EXPECT_EQ(vec[2], 2);
@@ -35,6 +34,11 @@ TEST(VectorTest, CopyConstructor) {
 
   EXPECT_EQ(vec.size(), vec_copy.size());
   EXPECT_EQ(vec.capacity(), vec_copy.capacity());
+
+  EXPECT_EQ(vec_copy[0], 0);
+  EXPECT_EQ(vec_copy[1], 1);
+  EXPECT_EQ(vec_copy[2], 2);
+  
   EXPECT_EQ(vec_copy[0], 0);
   EXPECT_EQ(vec_copy[1], 1);
   EXPECT_EQ(vec_copy[2], 2);
@@ -47,35 +51,46 @@ TEST(VectorTest, CopyAssignment) {
 
   EXPECT_EQ(vec.size(), vec_copy.size());
   EXPECT_EQ(vec.capacity(), vec_copy.capacity());
+
+  EXPECT_EQ(vec_copy[0], 0);
+  EXPECT_EQ(vec_copy[1], 1);
+  EXPECT_EQ(vec_copy[2], 2);
+  
   EXPECT_EQ(vec_copy[0], 0);
   EXPECT_EQ(vec_copy[1], 1);
   EXPECT_EQ(vec_copy[2], 2);
 }
 
 TEST(VectorTest, MoveConstructor) {
-  tgl::vector<int> vec{ 0 };
+  tgl::vector<int> vec{0,1,2};
   tgl::vector<int> vec_moved( std::move(vec));
 
-  EXPECT_EQ(vec_moved.size(), 1);
-  EXPECT_EQ(vec_moved.capacity(), 1);
-  EXPECT_NE(vec_moved.begin().get_ptr(), nullptr);
+  EXPECT_EQ(vec_moved.size(), 3);
+  EXPECT_EQ(vec_moved[0], 0);
+  EXPECT_EQ(vec_moved[1], 1);
+  EXPECT_EQ(vec_moved[2], 2);
 
-  EXPECT_EQ(vec.begin().get_ptr(), nullptr);
+  EXPECT_EQ(vec.begin(), nullptr);
 }
 
 TEST(VectorTest, MoveAssignment) {
-  tgl::vector<int> vec{ 0 };
+  tgl::vector<int> vec{0,1,2};
   tgl::vector<int> vec_moved = std::move(vec);
 
-  EXPECT_EQ(vec_moved.size(), 1);
-  EXPECT_EQ(vec_moved.capacity(), 1);
-  EXPECT_NE(vec_moved.begin().get_ptr(), nullptr);
+  EXPECT_EQ(vec_moved.size(), 3);
+  EXPECT_EQ(vec_moved[0], 0);
+  EXPECT_EQ(vec_moved[1], 1);
+  EXPECT_EQ(vec_moved[2], 2);
 
-  EXPECT_EQ(vec.begin().get_ptr(), nullptr);
+  EXPECT_EQ(vec.begin(), nullptr);
 }
 
 TEST(VectorTest, AccessWithBoundsChecking) {
   tgl::vector<int> vec{0,1,2};
+
+  EXPECT_EQ(vec.at(0), 0);
+  EXPECT_EQ(vec.at(1), 1);
+  EXPECT_EQ(vec.at(2), 2);
   EXPECT_THROW(vec.at(3), std::out_of_range);
 }
 
@@ -92,7 +107,7 @@ TEST(VectorTest, PushBack) {
   vec.push_back(10);
 
   EXPECT_EQ(vec.size(), 4);
-  EXPECT_EQ(*vec.end(), 10);
+  EXPECT_EQ(*(vec.end()-1), 10);
 }
 
 TEST(VectorTest, PopBack) {
@@ -102,3 +117,20 @@ TEST(VectorTest, PopBack) {
   EXPECT_EQ(vec.size(), 0);
   EXPECT_THROW(vec.pop_back(), std::out_of_range);
 }
+
+TEST(VectorTest, Insert) {
+  tgl::vector<int> vec{0,1};
+
+  vec.insert(vec.end(), 2);
+  vec.insert(vec.begin(), -1);
+  vec.insert(&vec[2], 99);
+
+  EXPECT_EQ(vec.size(), 5);
+
+  EXPECT_EQ(vec[0], -1);
+  EXPECT_EQ(vec[1], 0);
+  EXPECT_EQ(vec[2], 99);
+  EXPECT_EQ(vec[3], 1);
+  EXPECT_EQ(vec[4], 2);
+}
+

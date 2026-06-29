@@ -6,8 +6,7 @@
 #include <utility>
 #include <limits>
 #include <stdexcept>
-#include <iterator>
-// #include <iostream>
+#include <algorithm>
 
 namespace tgl {
 
@@ -22,42 +21,14 @@ class vector
   public:
     using value_type      = T;
     using size_type       = size_t;
+    using difference_type = std::ptrdiff_t;
+    using pointer         = T*;
     using reference       = T&;
     using const_reference = const T&;
+    
+    using iterator        = pointer;
+    using const_iterator  = const pointer;
 
-    class iterator
-    { 
-      public:
-        using value_type        = T;
-        using pointer           = T*;
-
-      private:
-        T* p;
-
-      public:
-        /**
-         * @brief Constructs an iterator from a value_type pointer
-         * @param it Pointer to the node 
-         */
-        iterator(value_type* it) : p{ it } { }
-        iterator& operator--() { p--; return *this; }
-        iterator& operator++() { p++; return *this; }
-        iterator  operator++(int) { 
-          T* temp_p = p;
-          p++;
-          return temp_p;
-        }
-
-        reference operator*() { return *p; }
-
-        /**
-         * @brief Retrieves the underlying pointer
-         */
-        pointer get_ptr() const { return p; }
-
-        bool operator==(const iterator& it) const { return p == it.p; }
-        bool operator!=(const iterator& it) const { return p != it.p; }
-    };
     /**
      * @brief Initializes an empty vector.
      */
@@ -119,8 +90,7 @@ class vector
      * @param vec The vector to copy from.
      * @return A reference to the current vector.
      */
-    vector& operator=(const vector& vec)
-    {
+    vector& operator=(const vector& vec) {
       if (this == &vec) 
         return *this; // self-assignment check
 
@@ -139,8 +109,7 @@ class vector
      * @param vec The vector to move from.
      * @return A reference to the current vector.
      */
-    vector& operator=(vector&& vec)
-    { 
+    vector& operator=(vector&& vec) { 
       if (this == &vec) 
         return *this; // self-assignment check
       
@@ -151,11 +120,7 @@ class vector
       return *this;
     }
 
-    /**
-     * @brief Destructor.
-     */
-    ~vector()
-    {
+    ~vector() {
       delete[] elem_;
     }
 
@@ -165,8 +130,7 @@ class vector
      * @return Reference to the requested element.
      * @throws std::out_of_range if pos is not within the range of the container.
      */
-    reference at(size_type pos)
-    {
+    reference at(size_type pos) {
       if (pos < size_)
         return elem_[pos];
       throw std::out_of_range("Index out of range");
@@ -177,8 +141,7 @@ class vector
      * @param pos Position of the element to return.
      * @return Reference to the requested element.
      */
-    reference operator[](size_type pos) noexcept
-    {
+    reference operator[](size_type pos) noexcept {
       return elem_[pos];
     }
     
@@ -187,8 +150,7 @@ class vector
     /**
      * @brief Returns an iterator to the beginning of the vector.
      */
-    iterator begin() noexcept
-    {
+    iterator begin() noexcept {
       return iterator(elem_);
     }
 
@@ -201,34 +163,24 @@ class vector
 
     // Capacity
 
-    /**
-     * @brief Checks whether the vector is empty.
-     * @return true if the vector contains no elements, false otherwise.
-     */
-    bool empty() const noexcept {
+    bool is_empty() const noexcept {
       return size_ == 0;
     }
 
-    /**
-     * @brief Returns the number of elements in the vector.
-     */
     size_type size() const noexcept {
       return size_;
     }
     
-    /**
-     * @brief Returns the maximum number of elements the vector can currently hold.
-     */
     size_type capacity() const noexcept {
       return capacity_;
     }
 
-    /**
-     * @brief Returns the maximum possible number of elements the vector could hold.
-     */
-    size_type max_size() const noexcept
-    {
+    size_type max_size() const noexcept {
       return std::numeric_limits<size_type>::max();
+    }
+
+    bool is_full() const noexcept {
+      return size_ == capacity_;
     }
     
     /**
@@ -259,17 +211,36 @@ class vector
     void push_back(const_reference elem) {
       if (size_ == capacity_)
         reserve(capacity_ == 0 ? 1 : 2*capacity_);
-      elem_[++size_] = elem;
+      elem_[size_++] = elem;
     }
 
     /**
      * @brief Removes the last element of the vector and returns it.
-     * @return A reference to the removed element.
      * @throws std::out_of_range if the vector is empty.
      */
     void pop_back() {
       if (size_ == 0) throw std::out_of_range("Vector is empty");
       --size_;
+    }
+    
+    /**
+     * @brief Inserts elem at position pos
+     * @param pos The position to insert elem
+     * @param elem The element to be inserted
+     */
+    void insert(iterator pos, value_type elem) {
+      if (pos == end())
+        push_back(elem);
+      else {
+        auto offset = pos - begin();
+        if (size_ == capacity_) {
+          reserve(capacity_ == 0 ? 1 : 2*capacity_);
+          pos = begin() + offset;
+        }
+        size_++;
+        std::move_backward(pos, end()-1, end());
+        *pos = elem;
+      }
     }
 
   private:
