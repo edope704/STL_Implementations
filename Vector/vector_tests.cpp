@@ -134,3 +134,16 @@ TEST(VectorTest, Insert) {
   EXPECT_EQ(vec[4], 2);
 }
 
+TEST(VectorTest, Erase) {
+  tgl::vector<int> vec{0,1,2,3,4};
+
+  vec.erase(&vec[2]);
+  vec.erase(vec.begin());
+  vec.erase(vec.end());
+
+  EXPECT_EQ(vec.size(), 2);
+
+  EXPECT_EQ(vec[0], 1);
+  EXPECT_EQ(vec[1], 3);
+}
+
