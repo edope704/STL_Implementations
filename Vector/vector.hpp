@@ -209,7 +209,7 @@ class vector
      * @param elem The element to be appended.
      */
     void push_back(const_reference elem) {
-      if (size_ == capacity_)
+      if (is_full())
         reserve(capacity_ == 0 ? 1 : 2*capacity_);
       elem_[size_++] = elem;
     }
@@ -232,15 +232,29 @@ class vector
       if (pos == end())
         push_back(elem);
       else {
+        // Saving the offset is necessary in case of reserve() as it 
+        // invalidates pos
         auto offset = pos - begin();
-        if (size_ == capacity_) {
+        if (is_full()) {
           reserve(capacity_ == 0 ? 1 : 2*capacity_);
+          // Recalculate pos with new base pointer
           pos = begin() + offset;
         }
         size_++;
         std::move_backward(pos, end()-1, end());
         *pos = elem;
       }
+    }
+    
+    /**
+     * @brief Erases an element from the vector
+     * @param pos the position of the element to be removed
+     * @return iterator end()
+     */
+    iterator erase(iterator pos) {
+      std::move(pos+1, end(), pos);
+      size_--;
+      return end();
     }
 
   private:
