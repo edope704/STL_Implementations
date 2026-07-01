@@ -141,8 +141,28 @@ class list
      * @return Iterator pointing to the newly inserted element.
      * @todo Implement the insertion logic.
      */
-    iterator insert(iterator& it, const_reference elem) {
-      return begin();
+    iterator insert(iterator it, const_reference elem) {
+      if (it == begin()) {
+        push_front(elem);
+        return begin();
+      }
+      else if (it == end()) {
+        push_back(elem);
+        return end();
+      }
+      else {
+        node* pos = it.get_ptr();
+        node* new_node = new node(elem);
+        
+        new_node->prev_ = pos->prev_;
+        new_node->next_ = pos;
+        
+        pos->prev_->next_ = new_node;
+        pos->prev_ = new_node;
+
+        size_++;
+        return iterator(new_node);
+      }
     }
 
     /**
@@ -151,8 +171,25 @@ class list
      * @return Iterator pointing to the element following the erased one.
      * @todo Implement the erase logic.
      */
-    iterator erase(iterator p) {
-      return begin();
+    iterator erase(iterator it) {
+      if (it == begin()) {
+        pop_front();
+        return begin();
+      }
+      else if (it == end()) {
+        pop_back();
+        return end();
+      }
+      else {
+        node* to_erase = it.get_ptr();
+        node* to_return = to_erase->next_;
+        to_erase->next_->prev_ = to_erase->prev_;
+        to_erase->prev_->next_ = to_erase->next_;
+        delete to_erase;
+
+        size_--;
+        return to_return;
+      }
     }
 
     /**
