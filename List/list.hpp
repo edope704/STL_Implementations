@@ -1,7 +1,6 @@
 #ifndef LIST_HPP
 #define LIST_HPP
 
-#include <algorithm>
 #include <cstddef>
 #include <initializer_list>
 #include <iterator>
@@ -234,6 +233,7 @@ class list
         node* to_erase = tail_;
         tail_ = tail_->prev_;
         if (tail_ != nullptr) tail_->next_ = nullptr;
+        else head_ = nullptr;
         size_--;
         delete to_erase;
       }
@@ -247,6 +247,7 @@ class list
         node* to_erase = head_;
         head_ = head_->next_;
         if (head_ != nullptr) head_->prev_ = nullptr;
+        else head_ = nullptr;
         size_--;
         delete to_erase;
       }
