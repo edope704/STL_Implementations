@@ -231,9 +231,11 @@ class list
      */
     void pop_back() {
       if (size_ >= 1) { 
+        node* to_erase = tail_;
         tail_ = tail_->prev_;
         if (tail_ != nullptr) tail_->next_ = nullptr;
         size_--;
+        delete to_erase;
       }
     }
     
@@ -241,10 +243,12 @@ class list
      * @brief Removes the first element from the list.
      */
     void pop_front() {
-      if (size_ >= 1) { 
+      if (size_ >= 1) {
+        node* to_erase = head_;
         head_ = head_->next_;
         if (head_ != nullptr) head_->prev_ = nullptr;
         size_--;
+        delete to_erase;
       }
     }
 
