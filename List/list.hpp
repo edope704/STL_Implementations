@@ -129,6 +129,8 @@ class list
           push_back( elem );
       }
 
+    size_type size() { return size_; }
+
     iterator begin() { return iterator(head_); }
 
     iterator end() { return iterator(tail_->next_); }
