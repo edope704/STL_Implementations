@@ -47,8 +47,8 @@ template<
         bucket_count_ = bucket_list_.size();
       }
 
-      size_t seed = hash_key( &elem.first );
-      size_t index = seed % bucket_count_; 
+      size_type seed = hash_key( &elem.first );
+      size_type index = seed % bucket_count_; 
       bucket_list_.at( index ).insert( elem );
       elem_count_++;
 
@@ -56,21 +56,37 @@ template<
     }
 
     void erase( const key_type& key ) {
-      size_t seed = hash_key( &key );
-      size_t index = seed % bucket_count_;
+      size_type seed = hash_key( &key );
+      size_type index = seed % bucket_count_;
       auto& bucket = bucket_list_.at( index );
       
       for ( auto& elem : bucket ) {
-        if ( elem.first == key ) bucket.erase( elem );
+        if ( elem.first == key ) {
+          bucket.erase( elem );
+          elem_count_--;
+        }       
       }
+
+      update_load_factor();
     }
 
     // Access
-    mapped_type& at( const key_type& key ) { }
-    size_type count( const key_type& key ) { }
+    mapped_type& at( const key_type& key ) { 
+      size_type seed = hash_key( key );
+      size_type index = seed % bucket_count_;
+      auto& bucket = bucket_list_.at( index );
+      
+      for ( auto& elem : bucket ) {
+        if ( elem.first == key ) {
+          return elem;
+        }
+      }
+
+      return;
+    }
 
   private:
-    size_t hash_key( const key_type &key ) {
+    size_type hash_key( const key_type &key ) {
       return hash_function( key );
     }
 
